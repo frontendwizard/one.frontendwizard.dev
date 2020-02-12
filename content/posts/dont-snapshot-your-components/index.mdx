@@ -1,0 +1,93 @@
+---
+title: Don't snapshot your UI components, make assertions!
+date: 2019-10-21
+tags:
+  - testing
+  - react
+  - javascript
+---
+
+Snapshots are a great tool for testing. It enables you to ensure that something always results **exactly** the same thing as before, which is absolutely useful if you're unit testing pure functions. UI Components are (or should be) pure functions, so, why does the title of this article state that we shouldn't use it for UI components? Allow me to explain.
+
+# The problem
+
+Let's imagine the following situation. You developed a card component showing an image and the title of your blog post on your personal blog. You then decide to write unit tests for this component to make sure that it shows both the image and the title.
+
+That's an easy one, just snapshot it, and you're good to go, right?
+
+Let's write it down:
+
+```js
+describe('Card', () => {
+  it('should show image and title', () => {
+    const { asFragment } = render(() =>
+      <Card image={/*some url*/} title="Title of my Post" />)
+    expect(asFragment()).toMatchSnapshot()
+  })
+})
+```
+
+Boom! Your snapshot now has the markup for the **whole** component. You're covered.
+
+Now you want to add a button to the component so that your readers can actually go to the post and read it, cause you know, you actually want people to read your posts. You make the change, boot up the development server of your blog and it's there, working beautifully.
+
+Then you run your tests and they fail...
+
+You read the test description 'should show image and title', look at the development version of your blog and you clearly see that both the image and the title are being shown, plus the new shiny button.
+
+I hear you saying: "Well, don't be stupid, just update your snapshot!"
+
+## Update snapshot
+
+You're right, I forgot to update my snapshot. Now **I** have to look at the snapshot, compare the old and new markup, assess whether the changes are intended and update it.
+
+I have one question for you: **Who's making the assertion, is it you or your test?**
+
+It's easy to do it with one component, but what will it happen you have 50 different components using the changed component and all the snapshots tests break?
+
+We write tests to assure that our components do what they need to, fulfill its contract. The moment you are the one making the assertion instead of your test, you're swapping roles. That's literally the same as doing a manual test.
+
+Plus, this is such dangerous behavior. It put's you into a mindset of: "I made a markup change, just update the snapshot, no need to check". That's how you just slip in a buggy component.
+
+## Tests resilience
+
+We can also talk about the resilience of our test. The test states that it shows both the image and the title. While the snapshot does show that both of them are there, it actually does way more than that. A snapshot makes sure that the output of your component is **exactly** the same and before. This makes your codebase resistant to refactoring, which is most certainly not a good thing.
+
+Your tests shouldn't care about the implementation, they should care about the results and if it meets the specs. This way you can ensure that you don't have a false negative out of a test. This test should never fail if the image and the title are being shown on the final markup, regardless of how that's achieved.
+
+# The solution
+
+I hope that by now you do understand my reasoning on why snapshotting UI is a bad idea.
+
+The solution is simple: make assertions!
+
+A couple of years ago that was annoying, I agree. But now we have [@testing-library](https://testing-library.com) with [super amazing queries](https://testing-library.com/docs/dom-testing-library/api-queries) like `getByText`, `getByRole`, and more. If you haven't heard of, take a look at it. It's really amazing.
+
+Let's refactor using them:
+
+```js
+describe('Card', () => {
+  it('should show image and title', () => {
+    const title = "Title of my post"
+    const url = "https://someimageurl.com"
+    const altText = "description of the image"
+    const { getByText, getByAltText } = render(() =>
+      <Card image={url} title={title} />)
+    getByText(title)
+    expect(getByAltText(altText)).toHaveAttribute('src', url)
+  })
+})
+```
+
+A few considerations:
+
+* **Meaningful error messages**. Snapshot delivers the job of finding out what's wrong with the component to you. You're the one making the comparison. You do get a nice diff, but that's it. With this refactor, now the error messages actually tell you what's wrong. Be it not finding a component, which means somehow you screwed up the rendering or you changed the API of the component and have not updated your tests to cover all the changes.
+* **No false alerts**. Now, if by any means, you change the markup, add or remove anything other then the image and the title, the test won't fail and you can safely iterate on this component and refactor it to make it better in the future.
+* **You are consuming the component as the user will**. The queries provided by `dom-testing-library` force you to use your components just like a user would (e.g. looking for the text on the screen or looking for the alt text of an image).
+
+# Conclusion
+
+Writing snapshot tests for your UI components has more cons than pros. It enforces a codebase that resists change. Testing for its behavior and making specific assertions, on the other hand, leads to no false alerts and more meaningful error messages.
+
+How do you feel about this? Feel free to tag me on twitter (@frontendwizard) and open the discussion. Let's all discuss and learn together.
+

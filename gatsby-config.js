@@ -4,7 +4,14 @@ require(`dotenv`).config({
 
 module.exports = {
   siteMetadata: {
-    siteTitleAlt: `Minimal Blog - Gatsby Theme`,
+    author: 'Juliano Farias',
+    siteTitle: `Juliano's blog`,
+    siteTitleAlt: `Juliano Farias - Front End Engineer`,
+    siteImage: `./banner.jpg`,
+    siteLanguage: `en-US`,
+    siteDescription: `A place about me and my thoughts`,
+    siteUrl: `https://iamjuliano.dev`,
+    siteHeadline: `Juliano Farias - Front End Engineer`,
   },
   plugins: [
     {
@@ -23,11 +30,15 @@ module.exports = {
         externalLinks: [
           {
             name: `Twitter`,
-            url: `https://twitter.com/lekoarts_de`,
+            url: `https://twitter.com/frontendwizard`,
           },
           {
-            name: `Instagram`,
-            url: `https://www.instagram.com/lekoarts.de/`,
+            name: `Github`,
+            url: `https://www.github.com/thefrontendwizard/`,
+          },
+          {
+            name: `DEV`,
+            url: `https://www.dev.to/frontendwizard/`,
           },
         ],
       },
@@ -42,9 +53,9 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `minimal-blog - @lekoarts/gatsby-theme-minimal-blog`,
-        short_name: `minimal-blog`,
-        description: `Typography driven, feature-rich blogging theme with minimal aesthetics. Includes tags/categories support and extensive features for code blocks such as live preview, line numbers, and code highlighting.`,
+        name: `iamjuliano.dev`,
+        short_name: `iamjuliano.dev`,
+        description: `A blog about front end development and anything else that pops into a mind of a front end engineer.`,
         start_url: `/`,
         background_color: `#fff`,
         theme_color: `#6B46C1`,

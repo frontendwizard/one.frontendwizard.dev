@@ -1,0 +1,406 @@
+---
+title: Starting out on React with hooks
+date: 2019-03-02
+tags:
+  - react
+  - beginners
+  - javascript
+---
+
+Hi there.
+
+A couple of weeks ago React officially released this new API called Hooks and you, who's been looking at React curiously for the past few months or even got to code a few components, have been wondering if now it's the time to learn more about React...
+
+Well, if there's one thing I can assure you, is that now, more than ever, is a really good time to start building you React skills. React has been around for the last 5 years and learnt a lot from it's surroundings and past experiences and it is a rock solid library to build apps pretty much anywhere. This new API makes it even more clean and easy to compose and use logic between components.
+
+Let's make a brief introduction to the most primitive concepts, introduce the most basic hooks and then I'll point you to some awesome resources where you can learn everything about React.
+
+### What's React?
+
+You probably know what's React at this point, but let's just get this out of the way. React is library that deals with finding the optimal way to render your application somewhere. It's built with JavaScript and we use it primarily to build web applications, but it can be used to render pretty much everywhere nowadays, like on Android and iOS, with React Native, on TVs, on the server, on the command-line, and on and on.
+
+How is that possible? React built the logic to find the minimal effort needed to render separated from the actual rendering primitives. This way, to use React somewhere, all we need to do is to build the rendering layer. For the web this is the `react-dom` library.
+
+To create a React element, all we need to do is to import React and ReactDOM into a html file and then open a third script tag, after the two previous ones, and start creating your components, right?
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>React Example</title>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.8.3/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.8.3/umd/react-dom.development.js"></script>
+  <script>
+    // Your code is going to go here
+  </script>
+</body>
+
+</html>
+```
+
+Well, not quite there. We are adding our root div there, which will be the place where we render our components, but first we have to create our components and then we have to actually put them into the `root` div that we created.
+
+To create and element we have to do the following inside the third tag:
+
+```js
+const App = () => React.createElement(
+    'div',
+    {},
+    React.createElement('h1', {}, 'My Element')
+)
+```
+
+And to render it, after the App component we add:
+
+```js
+ReactDOM.render(React.createElement(App), document.getElementById("root"))
+```
+
+And now we should see the `h1` element, inside a `div`, with the "My Element" text inside.
+
+I know, you're like: "Seriously? All of this to render some simple html?". Just hang on with me a bit more.
+
+We should note that everything that React renders is a component. That's another big win for React. Your app gets split into small little pieces that work together and abstract away it's internals.
+
+We used `h1` and `div` here, but anything that you put there, will be the output, so you can work with web components too.
+
+We can also nest components as we please, and this is when things start to get interesting.
+
+Lets create a `Person` component.
+
+```js
+const Person = () => React.createElement(
+    'div',
+    {},
+    [
+        React.createElement('h1', {}, 'Juliano Rafael'),
+        React.createElement('h2', {}, '@frontendwizard'),
+        React.createElement('h2', {}, 'Front End Developer'),
+    ]
+)
+```
+
+Now, in our app we can create as many instances of our `Person` component as we please:
+
+```js
+const App = () => React.createElement(
+    'div',
+    {},
+    [
+        React.createElement(Person),
+        React.createElement(Person),
+        React.createElement(Person),
+    ]
+)
+```
+
+Bit boring, but interesting. You should see three Juliano's on your html. That's way too much Juliano's, no one would be happy with that :smile:. Our values for the `Person` component is hardcoded into the component. Let's change that with the most basic component feature, the `props`. Have you noticed the empty object we keep passing in as the second argument to `React.createElement`? Those are the `props`. They keep all the properties passed to the object. Conveniently, they are also the first argument passed to a function component. Let's change the `Person` component to use that.
+
+```js
+const Person = props => React.createElement(
+    'div',
+    {},
+    [
+        React.createElement('h1', {}, props.name),
+        React.createElement('h2', {}, props.twitter),
+        React.createElement('h2', {}, props.job),
+    ]
+)
+```
+
+Cool, now we can get rid of those Juliano's clones and give each instance it's own identity.
+
+```js
+const App = () => React.createElement(
+    'div',
+    {},
+    [
+        React.createElement(Person, {
+            name: "Juliano Rafael",
+            twitter: "@frontendwizard",
+            job: "Front End Developer"
+        }),
+        React.createElement(Person, {
+            name: "Leonardo Elias",
+            twitter: "@leonardoelias_",
+            job: "Front End Developer"
+        }),
+        React.createElement(Person, {
+            name: "Marcos Eptacio",
+            twitter: "@eptaccio",
+            job: "JavaScript Developer"
+        }),
+        React.createElement(Person, {
+            name: "Wallace Batista",
+            twitter: "@uselessdevelop",
+            job: "Front End Developer"
+        }),
+    ]
+)
+```
+
+Cool, right? Now we can conquer the world and build the most complex apps! **Certainly not with this syntax.** While it is great that we can already abstract away code into components, this syntax is way to cumbersome and hard to read. Time to build upon this.
+
+### JSX
+
+There's a reason no one uses React without JSX and that is because JSX improves readability by a lot. JSX let you write a HTML-like syntax that gets transpiled down to exactly what we've been doing so far. The downside is that now we need to have this transpiling process in our workflow to use this. We can do this with `@babel/standalone` right in the browser, but that's no good for production since it transpile the code live, and this is one more step that has to happen before your code gets processed in the browser.
+
+The number one build tool used today on React projects is `webpack`. Thanks to `create-react-app`, the whole setup is abstracted away in `react-scripts`. All you need to do is:
+
+```sh
+npx create-react-app my-app
+cd my-app
+npm start
+```
+
+This will boot up a brand new application on `http://localhost:3000`.
+
+Now you say to me: "Hey, how did you went from the simple html file with scripts to this complex setup with webpack that feels like magic to me?"
+
+I hear you. Trust me, you're going to love this. All you need to know at this point is that this setup gives you a solid workflow to develop, debug and ship your app, without the need to wiring up all the webpack configs, which can be super overwhelming. This setup will transpile your JSX code down to what we've done before, with a little bit more to allow us to use some nice features from ES2015+ that are not available in all browsers. At the end, trusting the `react-scripts` is a safe bet and will get you a nice peace of mind.
+
+Enough with the setup, now we can refactor our `Person` component to use JSX:
+
+```jsx
+const Person = props => (
+    <div>
+        <h1>{props.name}</h1>
+        <h2>{props.twitter}</h2>
+        <h2>{props.job}</h2>
+    </div>
+)
+```
+
+And `App` can be written like this:
+
+```jsx
+const App = () => (
+    <div>
+        <Person
+            name="Juliano Rafael"
+            twitter="@frontendwizard"
+            job="Front End Developer"
+        />
+        <Person
+            name="Leonardo Elias"
+            twitter="@leonardoelias_"
+            job="Front End Developer"
+        />
+        <Person
+            name="Marcos Eptacio"
+            twitter="@eptaccio"
+            job="JavaScript Developer"
+        />
+        <Person
+            name="Wallace Batista"
+            twitter="@uselessdevelop"
+            job="Front End Developer"
+        />
+    </div>
+)
+```
+
+I don't know about you, but this feels way much better to me. The more you nest components, the more you see the benefits of JSX.
+
+There are some little gotchas of JSX though and you can read all of the details of JSX in the docs [here](https://reactjs.org/docs/jsx-in-depth.html). For now, all you need to know is:
+
+* your components, other than the ones specified in HTML, *MUST BE capitalized*, otherwise it'll try to have it as a web component instead of a React component.
+* if you're going to add a class to your component, you need to use the `className` property, instead of `class` because class is a reserved word on JavaScript.
+* all properties with hyphen need to be prefixed with `data-` otherwise React won't render them down on the DOM.
+
+I can live with that.
+
+### Splitting your components into multiple files
+
+You probably noticed that with `create-react-app` you get the components split into separate files by default and being imported and exported using the ES2015 syntax.
+
+This is possible because of the webpack setup behind the scenes. With this, you can put every component into it's own file and export it from it by using:
+
+```js
+export default MyComponent
+```
+
+On another file you can import the component by using the import statement:
+
+```js
+import MyComponent from './relative-path-to-MyComponent'
+```
+
+---
+
+Ok, so now we can write our components in a HTML like syntax, break it down into smaller components, abstract away it's implementation, but all of it is still static. That's because props can't change inside of a component, they are immutable. We need something that we can store some state in it and dynamically change it, while letting React update the interface in response.
+
+Lets talk about state.
+
+### State
+
+State is a dynamic property of your component. You can change it as you wish during the life of the component and React will take care of updating the rendered component to reflect the changes on your state. Every time you change the state, React will find the fastest way to update your rendered component and take care of updating it for you. That's beautiful.
+
+To create some state, we're going to use a Hook. Hooks are a new addition to React 16.8 and they dramatically simplify the React API and allow for brand new ways to structure and compose your components and your functionalities. It's safe to assume that they are going to be the default way we create components from now on.
+
+We can create a state by using the `useState` from `React` and passing in the initialValue as the first parameter. This hook will return an array where the first value is the current state and the second value is a function to update the state.
+
+```jsx
+const Counter = () => {
+    const [count, setCount] = React.useState(0)
+    const handleClick = () => setCount(count + 1)
+    return (
+        <div>
+            <p>You clicked {count} times</p>
+            <button onClick={handleClick}>Click Me!</button>
+        </div>
+    )
+}
+```
+
+And this is our first truly dynamic component :tada: :tada: :tada:. This is where the real strength of React lies. It's super simple to create dynamic components.
+
+But things can get more interesting. Only with `useState` we can't actually do asynchronous stuff and let's be real, the major part of the web development is talking with APIs. So, how do we do that?
+
+### Effects
+
+Sometimes you need to do to something in response to a change. That's what we call an effect. You can trigger effects for all kinds of events on a component life, such as mount, unmount and update.
+
+To demonstrate this concept, let's do something a bit more real world like. Let's create a component that fetches a random cat image from this [public api](https://aws.random.cat/meow) and renders it on a page.
+
+For effects, we have another hook, the `useEffect`. This hook accepts two parameters: the first is a function that is executed at some point of the component lifecycle and the second is an optional array that lists what this function depends upon. Three things can happen with this second argument:
+
+* If nothing is passed to it, React assumes that whenever anything happens, this effect needs to be run again.
+* If you pass an empty array, React will assume that this function only needs to be run once, after the component's first render.
+* If you put some things inside this array, React will run the effect every time any of the elements inside the array changes.
+
+And there we go:
+
+```jsx
+const RandomCat = () => {
+  const [ready, setReady] = React.useState(false)
+  const [src, setSrc] = React.useState(null)
+  const [error, setError] = React.useState(null)
+  React.useEffect(() => {
+    fetch("https://aws.random.cat/meow")
+      .then(response => response.json())
+      .then(data => {
+        setReady(true)
+        setSrc(data.file)
+      })
+      .catch(error => setError(error))
+  }, [])
+  if (!ready) return <p>Loading...</p>
+  if (error) return <p>Oops, something went wrong!</p>
+  return <img src={src} alt="random cat photo" />
+}
+```
+
+And voilá, our component makes a request to a third party api, get the image address and render it with an image tag. We can make this better by refactoring this to a **custom hook**.
+
+### Custom Hooks
+
+We don't need to restrain ourselves to use only the React given hooks. We can create our own hooks that abstract away the details and expose only what matters. Lets get our hands dirty:
+
+```jsx
+const useRandomCatImg = () => {
+  const [ready, setReady] = React.useState(false)
+  const [src, setSrc] = React.useState(null)
+  const [error, setError] = React.useState(null)
+  React.useEffect(() => {
+    fetch("https://aws.random.cat/meow")
+      .then(response => response.json())
+      .then(data => {
+        setReady(true)
+        setSrc(data.file)
+      })
+      .catch(error => setError(error))
+  }, [])
+  return { ready, error, src }
+}
+
+const RandomCat = () => {
+  const { ready, error, src } = useRandomCatImg()
+  if (error) return <p>Oops, something went wrong!</p>
+  if (!ready) return <p>Loading...</p>
+  return <img src={src} alt="random cat photo" />
+}
+```
+
+And the instantaneous benefit from this is that now we can use the same `useRandomCatImg` anywhere else we see fit.
+
+A couple of things should be noted here:
+* Hooks **must be called inside a function component**.
+* It's a convention that Hooks should always start with `use`. That's because React assumes that you follow this and will only warn you for violations when you're following this convention. So, do follow it!
+
+Also, this whole managing state during a request is indeed a bit verbose and awkward, but hang on because this will soon get way better with React Suspense. I'm not going to cover this right now because we're not there yet, but you should know that this is going to get even better.
+
+### Class Components
+
+Despite Hooks being awesome, they have only been officially introduced recently and before that, all of this power of React were already here, just in a different way. Even though we'll certainly move to Hooks as standard, class components exist and they aren't going anywhere. Plus, you're likely to find them everywhere that has existed before Hooks.
+
+You create a class component by creating a class and extending `React.Component`. By doing this you now have access to the lifecycle methods from the components, like `componentDidMount`, `componentDidUpdate`, `componentShouldUpdate`, `componentWillUnmount` and others. You also get the power to instantiate a `state` and use `this.setState` to change it.
+
+Everything you can do with classes components, you can do it with hooks and vice-versa, with the exception of the `componentDidCatch` lifecycle method, but this is coming for hooks too.
+
+The same `RandomCat` component that we did with hooks before, looks like this with classes:
+
+```jsx
+class RandomCat extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {}
+    this.fetchRandomCatImg = this.fetchRandomCatImg.bind(this)
+  }
+
+  componentDidMount() {
+    this.fetchRandomCatImg()
+  }
+
+  fetchRandomCatImg() {
+    fetch("https://aws.random.cat/meow")
+      .then(response => response.json())
+      .then(data => {
+        this.setState({
+          error: null,
+          ready: true,
+          src: data.file
+        })
+      })
+      .catch(error => this.setState({ error }))
+  }
+  
+  render() {
+    if (this.state.error) return <p>Oops, something went wrong!</p>
+    if (!this.state.ready) return <p>Loading...</p>
+    return <img src={this.state.src} alt="random cat photo" />
+  }
+}
+```
+
+Reasonably more verbose, but it does the same thing. It's also harder to reuse this logic because `fetchRandomCatImg` can't be shared to be used elsewhere due to it's use of `this`, which makes it dependent of the component instance. There are solutions to this problem, mainly the render props and high-order component patterns, but both of them also add it's own share of issues. Hooks are just a better way to achieve logic reusability on a React application.
+
+As usual, [Dan Abramov](https://twitter.com/dan_abramov) has an [awesome article](https://dev.to/dan_abramov/making-sense-of-react-hooks-2eib) explaining why hooks are so good.
+
+### Conclusion
+
+State and effects are the bread and butter of React. It's the 20% that do 80% of things on React. The next steps on your journey now should probably be:
+
+* If you haven't been there, go to the docs. [React docs](https://reactjs.org/docs/getting-started.html) are just amazing and they are currently being translated to multiple languages. If the translation to your language is not ready yet, try to contribute to it. All the repos for each version of the docs can be found [here](https://github.com/reactjs).
+* Learn how to use a router. I do recommend you to look into [Reach Router](https://reach.tech/router) made by [Ryan Florence](https://twitter.com/ryanflorence) due to it's focus on accessibility.
+* Learn how to deal with [forms](https://reactjs.org/docs/forms.html), specially controlled components. React does have a different way to deal with form inputs and that can feel a bit awkward at the beginning. Do yourself a favor and use [formik](https://github.com/jaredpalmer/formik).
+* Learn how to test React components. [Kent C. Dodds](https://twitter.com/kentcdodds/) has lots of high quality content on this topic and he's also the author of [react-testing-library](https://github.com/kentcdodds/react-testing-library) which is an amazing tool to test your components. I can't stress enough how much testing is important. There's also this [article](https://dev.to/kentcdodds/introducing-the-react-testing-library-2k5d) from him that introduces the library. Check it out.
+* Check it out a few state management solutions. [Redux](https://github.com/reduxjs/redux) is the most commonly used but it can be quite overwhelming at first and it isn't the only one out there. [MobX](https://github.com/mobxjs/mobx) is known for being simple. A good rule for state management is only use it when really feel like you should. A lot of the times, `Context` is enough to share state between distant components on the tree. You absolutely don't need to worry about it in the beginning though.
+* Check it out the CSS tooling on the React ecosystem. I'm super fond of CSS-in-JS libraries because it gives you a lot more power when writing styles and it fits perfectly well into React, turning your styles into components. I'm super fond of [styled-components](https://github.com/styled-components/styled-components), but [emotion](https://github.com/emotion-js/emotion) is a solid option as well. [Max Stoiber's](https://twitter.com/mxstbr) recent article, ["Why I Write CSS in JavaScript"](https://mxstbr.com/thoughts/css-in-js/) is a great reading if you're searching for a more compelling argument in favor of CSS-in-JS.
+
+That's more than enough for now, certainly more than I intended for this article :smile:. Don't feel discouraged by the amount of links I just threw up here. Go slow and try each topic on your own time. More importantly, reach out to people and  make questions. The React community is super helpful and you can find help everywhere ([reddit](reddit.com/r/reactjs), developers on twitter, [freeCodeCamp](https://www.freecodecamp.org/) and many other places).
+
+At last, if you're still here, reach out in the comments below and tell me your story on how has it been your road into learning React. I'd love to hear about it. Also, hit that follow button to be notified when my next post get's published. 
+
+That's it for today. ✌️
+
+*Cover image by Caspar Camille Rubin on Unsplash*
+

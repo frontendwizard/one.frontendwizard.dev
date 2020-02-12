@@ -1,0 +1,74 @@
+---
+title: Inspired by @thevuedev, I created @TheReactDev
+date: 2019-03-06
+tags:
+  - react
+  - serverless
+  - javascript
+---
+
+This weekend I stumbled upon this article:
+
+[A bot that tweets new DEV articles about Vue](https://dev.to/danielelkington/a-bot-that-tweets-new-dev-articles-about-vue-4p5a)
+
+And I immediately thought: "Hey, this is an awesome idea. Let's make one about React as well, cause why not?"
+
+So I did. I created a bot that checks dev.to/t/react/latest every minute and tweets any new article. Here it is: [@TheReactDev](https://twitter.com/thereactdev)
+
+### TypeScript?
+
+I choose not to do TypeScript on this one. It is a super small function and I felt like JavaScript would get the job done faster.
+
+### Serverless
+
+You have many options when you do serverless. You can go AWS, Azure, GCloud, etc. The article explains in detail how to setup the Azure function and because I had never used Azure before, I followed along. The integration of Azure with VSCode is pretty cool, can't deny it, but I might switch up later on for the serverless framework to be sort of platform agnostic. Not that it matters for a project like this though. :smile:
+
+**UPDATE**: I had some headaches with azure. Probably because I don't have much experience with. So after a couple of hours I switched to AWS with the serverless framework for the tooling.
+
+### Scraping
+
+Because dev.to does not have an api yet, I had to scrape away the data from the url. I had used puppeteer before, but I absolutely loved the `x-ray` lib. The API is so clean. I'll definitely use more of it.
+
+### Problems I had
+
+At first, when I fetched the recent tweets from the @TheReactDev, the twitter api didn't always returned the posted urls on the entities.
+
+
+```js
+[
+  //...
+  [ { url: 'https://t.co/AA3sKrLsDZ',
+      expanded_url:
+       'https://dev.to/peterj/run-a-react-app-in-a-docker-container-kjn',
+      display_url: 'dev.to/peterj/run-a-r…',
+      indices: [Array] } ],
+  [ { url: 'https://t.co/hptME9oAgf',
+      expanded_url: 'https://twitter.com/i/web/status/1102686466436681731',
+      display_url: 'twitter.com/i/web/status/1…',
+      indices: [Array] } ],
+  // ..
+]
+```
+
+Because of this, I started checking for the article title and author on the tweet body. The problem is that the twitter API sometimes truncate the body. The solution to this was to use the `tweet_mode: "extended"` on the request for the tweets.
+
+But, just as I was writing this post, I observed that this also solves the problem of the links. With this mode, the twitter API not only returns the `full_text` but also returns the full `extended_url` as well. :sweat_smile:
+
+Checking for the URL is way more reliable so I'm rewriting my function to use this as well.
+
+### Telegram
+
+I also added a telegram bot that sends a message to a channel in case things go wrong. I choose telegram because it'll probably be the fastest way that the notification reaches me.
+
+### The repo
+
+{% github thefrontendwizard/TheReactDev %}
+
+### Like it?
+
+Well, it was super fun doing this. The feeling that you get when you see the function publishing new articles on twitter is amazing. :smile:
+
+If you like it, be sure to follow the [@TheReactDev](https://twitter.com/thereactdev) on twitter!
+
+Thank you for your time and until the next one!
+

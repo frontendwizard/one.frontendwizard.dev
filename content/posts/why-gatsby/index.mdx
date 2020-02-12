@@ -1,0 +1,51 @@
+---
+title: Why GatsbyJS?
+date: 2019-03-25
+tags:
+  - react
+  - javascript
+---
+
+If you have been following front end developers out there on twitter, you probably heard of GatsbyJS. Many developers have been switching from Wordpress or Medium, as a blogging platform, and started to boot up their own sites with Gatsby. Some might say it's a hype thing, because we as developers have been guilt many times for this. We love our new shiny tools and we're always refactoring code to the latest and greatest thing, only to do it again on the next wave.
+
+To guard ourselves from this sort of behavior, we need to dig a bit deeper and try to understand the reasoning behind it. Let's explore the following questions: **What is Gatsby? What does it offer for the developers? What are the strong use cases of it? What are the downsides?**
+
+### What is Gatsby?
+
+Not so long ago Gatsby used to be referred as a static site generator. While this is totally true, it's not everything. The best definition today for Gatsby is the one you get on it's home page at the time of this writing:
+
+> Gatsby is a free and open source _framework_ based on React that helps developers build blazing fast websites and apps.
+
+The key point here being the word framework. Gatsby is more than a static site generator. It truly is a PWA framework. The amount of features it's plugins offers pretty much out-of-the-box is really amazing.
+
+### What does it offers for developers?
+
+Let's face it, building website is **hard** and we always **underestimate** the effort needed, specially when it counts to best practices and accessibility. Don't even get me started on images. There a lot of checkboxes you need to check before shipping your website and failing to do it is not and option. We as developers need to provide the best possible experience for everyone everywhere or we might be not reaching everyone that needs that app or information at that moment. It is our duty as developers to always do our best to reach as much people as possible, regardless of their devices, their network speed or anything else.
+
+What does this has to do with Gatsby? Gatsby provides **a lot** of best practices and solid solutions right out-of-the-box. It is a core value of the Gatsby team that websites should be performant by default. Progressive image loading? Inlining of critical CSS? Painless PWA configuration? You name it, Gatsby got you. It is really impressive. Don't believe me? I encourage you to try it out.
+
+The solution for images is so good, that is constantly referred as a strong point of Gatsby, even thought it actually is a plugin. All you gotta do is add a couple of plugins into your Gatsby config file and you're good to go. Your images will be available on the GraphQL API at build time and the image component will handle all the resize, picking the best file format and everything else. You even get a blur up effect to improve the user experience for free.
+
+And we have yet to talk about the developer experience. It's just awesome. Check this out:
+
+* You have HMR, which let you have that instant feedback without the need to reload the page and lose the state.
+* Your application will be static, so you can go serverless, which makes the whole ops to have your app always available and ready to go simply not your problem. Zero worries about maintaining a server. The dream is real.
+* You have the sweetest asset pipeline where everything is done at build time.
+* You can also have previews of your PRs deployed making super easy to visualise the changes.
+
+This is one of the best developer experiences ready for you out there. Hands down.
+
+### What are the strong use cases of Gatsby?
+
+The most obvious use case is clearly the static website generation. But don't let that fool you, Gatsby can do more than that. I'd go as far to say that if you're building a web app with React that can afford to have a build process and don't need to instantly reflect database changes on it's routes, you're well served with Gatsby. I honestly don't see myself picking something else for websites anymore, at least for my own side projects.
+
+The [Gatsby showcase](https://www.gatsbyjs.org/showcase/) already has all sorts of websites and apps and I can safely assure you that this is going to grow. From documentation, to business, blogs, and even e-commerce apps.
+
+### What are the downsides?
+
+I have a hard time trying to find downsides for Gatsby. As I mentioned above, for webpages that you can't afford the build time and have to instantly reflect the database changes, you probably want to go with [Next.js](https://nextjs.org/).
+
+### Your opinion
+
+Do you agree or disagree with me? Please, reach out in the comments, let me know and we'll all continuously learn from it.
+
